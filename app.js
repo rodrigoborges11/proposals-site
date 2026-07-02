@@ -7,6 +7,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainTabs = document.querySelectorAll('.main-tab');
     let activeTabs = new Set(['Todas']);
 
+    // Selection Logic
+    let selectedProposals = new Set(JSON.parse(localStorage.getItem('selectedProposals') || '[]'));
+    const escolhasTab = document.getElementById('escolhasTab');
+    
+    function updateEscolhasTab() {
+        if(escolhasTab) {
+            escolhasTab.textContent = `⭐ As Minhas Escolhas (${selectedProposals.size}/4)`;
+        }
+    }
+    updateEscolhasTab();
+
     // Modal elements
     const modal = document.getElementById('proposalModal');
     const closeModalBtn = document.getElementById('closeModal');
@@ -62,9 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 passesTab = true;
             } else {
                 const specs = p.especializacao_proposta || [];
+                const idStr = (p.codigo_proposta || p.id.substring(0,6)).toString();
                 passesTab = Array.from(activeTabs).every(tab => {
                     if (tab === 'Empresas') {
                         return isEmpresa(p);
+                    } else if (tab === 'Escolhas') {
+                        return selectedProposals.has(idStr);
                     } else {
                         return specs.some(s => s.nome === tab);
                     }
@@ -109,9 +123,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? `<span class="status-badge" style="background: rgba(239, 68, 68, 0.15); color: #f87171;">Já Atribuído</span>`
                 : `<span class="status-badge">Disponível</span>`;
 
+            const idStr = id.toString();
+            const isSelected = selectedProposals.has(idStr);
+            if (isSelected) {
+                card.classList.add('is-selected');
+            }
+
             card.innerHTML = `
                 <div class="card-header">
-                    <span class="card-id">#${id}</span>
+                    <div class="card-header-inner">
+                        <button class="select-btn ${isSelected ? 'selected' : ''}" title="Adicionar/Remover das Minhas Escolhas" aria-label="Selecionar" data-id="${idStr}">
+                            ★
+                        </button>
+                        <span class="card-id">#${id}</span>
+                    </div>
                 </div>
                 <div class="card-body">
                     <h3 class="card-title">${title}</h3>
@@ -124,7 +149,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            card.addEventListener('click', () => openModal(p));
+            card.addEventListener('click', (e) => {
+                if(e.target.closest('.select-btn')) {
+                    e.stopPropagation(); // prevent modal opening
+                    const btn = e.target.closest('.select-btn');
+                    
+                    if (selectedProposals.has(idStr)) {
+                        selectedProposals.delete(idStr);
+                        card.classList.remove('is-selected');
+                        btn.classList.remove('selected');
+                    } else {
+                        if (selectedProposals.size >= 4) {
+                            alert("Pode escolher no máximo 4 propostas! Remova alguma antes de adicionar outra.");
+                            return;
+                        }
+                        selectedProposals.add(idStr);
+                        card.classList.add('is-selected');
+                        btn.classList.add('selected');
+                    }
+                    
+                    localStorage.setItem('selectedProposals', JSON.stringify(Array.from(selectedProposals)));
+                    updateEscolhasTab();
+                    
+                    // Se estivermos apenas a ver a aba de "Escolhas", esconder o cartao ao desselecionar
+                    if (activeTabs.has('Escolhas') && !selectedProposals.has(idStr)) {
+                        card.style.display = 'none';
+                    }
+                    
+                    return;
+                }
+                openModal(p);
+            });
             grid.appendChild(card);
         });
     }
