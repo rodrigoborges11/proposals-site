@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const grid = document.getElementById('proposalsGrid');
     const searchInput = document.getElementById('searchInput');
     const statsCounter = document.getElementById('statsCounter');
-    
+
     // Main Tabs logic for multiple selection
     const mainTabs = document.querySelectorAll('.main-tab');
     let activeTabs = new Set(['Todas']);
@@ -10,10 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Selection Logic
     let selectedProposals = new Set(JSON.parse(localStorage.getItem('selectedProposals') || '[]'));
     const escolhasTab = document.getElementById('escolhasTab');
-    
+
     function updateEscolhasTab() {
-        if(escolhasTab) {
-            escolhasTab.textContent = `⭐ Minhas Escolhas (${selectedProposals.size}/5)`;
+        if (escolhasTab) {
+            escolhasTab.textContent = `⭐ Minhas Escolhas`;
         }
     }
     updateEscolhasTab();
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mTitle = document.getElementById('mTitle');
     const mId = document.getElementById('mId');
     const mStatusBadge = document.getElementById('mStatusBadge');
-    
+
     // UI elements inside modal tabs
     const uiFields = {
         'Enquadramento': { sec: document.getElementById('mEnquadramentoSec'), text: document.getElementById('mEnquadramento') },
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Render cards
     function renderProposals() {
         const query = searchInput.value.toLowerCase();
-        
+
         const filtered = allProposals.filter(p => {
             // Main Tab filter (AND logic: passes if it has ALL of the selected specializations)
             let passesTab = false;
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 passesTab = true;
             } else {
                 const specs = p.especializacao_proposta || [];
-                const idStr = (p.codigo_proposta || p.id.substring(0,6)).toString();
+                const idStr = (p.codigo_proposta || p.id.substring(0, 6)).toString();
                 passesTab = Array.from(activeTabs).every(tab => {
                     if (tab === 'Empresas') {
                         return isEmpresa(p);
@@ -89,12 +89,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const titleMatch = (p.titulo || '').toLowerCase().includes(query);
             const titleEnMatch = (p.titulo_en || '').toLowerCase().includes(query);
             const orientadorMatch = (p.ordem_orientadores || []).some(o => (o.nome || '').toLowerCase().includes(query));
-            
+
             return passesTab && (titleMatch || titleEnMatch || orientadorMatch);
         });
 
         grid.innerHTML = '';
-        
+
         if (filtered.length === 0) {
             grid.innerHTML = '<p style="color: var(--text-secondary); text-align: center; grid-column: 1 / -1; padding: 3rem;">Nenhuma proposta encontrada.</p>';
             statsCounter.textContent = '0 propostas';
@@ -107,19 +107,19 @@ document.addEventListener('DOMContentLoaded', () => {
         filtered.forEach(p => {
             const card = document.createElement('div');
             card.className = 'proposal-card';
-            
+
             const title = p.titulo || 'Sem Título';
-            const id = p.codigo_proposta || p.id.substring(0,6);
-            
+            const id = p.codigo_proposta || p.id.substring(0, 6);
+
             let supervisorTags = '';
             if (p.ordem_orientadores && p.ordem_orientadores.length > 0) {
-                supervisorTags = p.ordem_orientadores.map(o => 
+                supervisorTags = p.ordem_orientadores.map(o =>
                     `<span class="supervisor-badge">${o.nome}</span>`
                 ).join('');
             }
-            
+
             const isAssigned = p.aluno_identificado ? true : false;
-            const statusBadge = isAssigned 
+            const statusBadge = isAssigned
                 ? `<span class="status-badge" style="background: rgba(239, 68, 68, 0.15); color: #f87171;">Já Atribuído</span>`
                 : `<span class="status-badge">Disponível</span>`;
 
@@ -147,10 +147,10 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             card.addEventListener('click', (e) => {
-                if(e.target.closest('.select-btn')) {
+                if (e.target.closest('.select-btn')) {
                     e.stopPropagation(); // prevent modal opening
                     const btn = e.target.closest('.select-btn');
-                    
+
                     if (selectedProposals.has(idStr)) {
                         selectedProposals.delete(idStr);
                         btn.classList.remove('selected');
@@ -162,15 +162,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         selectedProposals.add(idStr);
                         btn.classList.add('selected');
                     }
-                    
+
                     localStorage.setItem('selectedProposals', JSON.stringify(Array.from(selectedProposals)));
                     updateEscolhasTab();
-                    
+
                     // Se estivermos apenas a ver a aba de "Escolhas", esconder o cartao ao desselecionar
                     if (activeTabs.has('Escolhas') && !selectedProposals.has(idStr)) {
                         card.style.display = 'none';
                     }
-                    
+
                     return;
                 }
                 openModal(p);
@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function resetModalTabs() {
         modalTabs.forEach(t => t.classList.remove('active'));
         modalTabContents.forEach(c => c.classList.remove('active'));
-        if(modalTabs.length > 0) {
+        if (modalTabs.length > 0) {
             modalTabs[0].classList.add('active');
             document.getElementById(modalTabs[0].getAttribute('data-target')).classList.add('active');
         }
@@ -205,15 +205,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Modal Logic
     function openModal(p) {
         resetModalTabs();
-        
-        mId.textContent = `Proposta #${p.codigo_proposta || p.id.substring(0,6)}`;
+
+        mId.textContent = `Proposta #${p.codigo_proposta || p.id.substring(0, 6)}`;
         mTitle.textContent = p.titulo || 'Sem Título';
-        
+
         const isAssigned = p.aluno_identificado ? true : false;
-        mStatusBadge.innerHTML = isAssigned 
+        mStatusBadge.innerHTML = isAssigned
             ? `<span style="color: #f87171;">Estado: Atribuída a ${p.nome_aluno_identificado}</span>`
             : `<span style="color: #34d399;">Estado: Disponível</span>`;
-        
+
         uiFields.Especializacoes.text.innerHTML = '';
         if (p.especializacao_proposta && p.especializacao_proposta.length > 0) {
             p.especializacao_proposta.forEach(esp => {
@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (val && val.trim() !== '') {
                 textEl.textContent = val.trim();
                 textEl.style.display = 'block';
-                textEl.previousElementSibling.style.display = 'block'; 
+                textEl.previousElementSibling.style.display = 'block';
                 hasPlano = true;
             } else {
                 textEl.style.display = 'none';
@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         modal.classList.add('active');
-        document.body.style.overflow = 'hidden'; 
+        document.body.style.overflow = 'hidden';
     }
 
     function closeModal() {
@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
             closeModal();
         }
     });
-    
+
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && modal.classList.contains('active')) {
             closeModal();
@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mainTabs.forEach(tab => {
         tab.addEventListener('click', (e) => {
             const spec = e.target.getAttribute('data-spec');
-            
+
             if (spec === 'Todas') {
                 activeTabs.clear();
                 activeTabs.add('Todas');
@@ -311,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     activeTabs.add(spec);
                 }
-                
+
                 if (activeTabs.size === 0) {
                     activeTabs.add('Todas');
                 }
