@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propostas de Estágio - DEI/MEI</title>
+    <!-- Modern font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Propostas de Estágio</h1>
+            <p>Mestrado em Engenharia Informática - FCTUC</p>
+        </header>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Pesquisar por título, orientador ou palavras-chave...">
+        </div>
+        
+        <div class="main-tabs" id="mainTabs">
+            <button class="main-tab active" data-spec="Todas">Todas</button>
+            <button class="main-tab" data-spec="Empresas">💼 Empresas</button>
+            <button class="main-tab" data-spec="Inteligência Artificial">Inteligência Artificial</button>
+            <button class="main-tab" data-spec="Engenharia de Software">Engenharia de Software</button>
+            <button class="main-tab" data-spec="Comunicações, Cloud e IoT">Comunicações, Cloud e IoT</button>
+            <button class="main-tab" data-spec="Cibersegurança">Cibersegurança</button>
+            <button class="main-tab" data-spec="Sistemas de Informação">Sistemas de Informação</button>
+            <button class="main-tab" data-spec="Computação no Entretenimento">Entretenimento</button>
+        </div>
+        
+        <div class="stats" id="statsCounter">
+            A carregar propostas...
+        </div>
+
+        <div class="proposals-grid" id="proposalsGrid">
+            <!-- Cards will be injected here via JS -->
+        </div>
+    </div>
+
+    <!-- Modal for Proposal Details -->
+    <div class="modal-overlay" id="proposalModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">&times;</button>
+            
+            <div class="modal-header-area">
+                <span class="modal-id" id="mId"></span>
+                <h2 class="modal-title" id="mTitle">Título da Proposta</h2>
+                <div class="status-badge" id="mStatusBadge"></div>
+            </div>
+
+            <div class="modal-tabs" id="modalTabs">
+                <button class="modal-tab active" data-target="tab-resumo">Resumo</button>
+                <button class="modal-tab" data-target="tab-objetivos">Objetivos</button>
+                <button class="modal-tab" data-target="tab-plano">Plano de Trabalho</button>
+                <button class="modal-tab" data-target="tab-condicoes">Condições & Obs</button>
+            </div>
+            
+            <div class="modal-tab-content active" id="tab-resumo">
+                <div class="modal-section" id="mEspecializacoesSec">
+                    <h3>Especializações</h3>
+                    <div class="tag-list" id="mEspecializacoes"></div>
+                </div>
+                <div class="modal-section" id="mOrientadoresSec">
+                    <h3>Orientadores</h3>
+                    <div class="tag-list" id="mOrientadores"></div>
+                </div>
+                <div class="modal-section" id="mAtribuicaoSec">
+                    <h3>Atribuição</h3>
+                    <p id="mAtribuicao"></p>
+                </div>
+                <div class="modal-section" id="mEnquadramentoSec">
+                    <h3>Enquadramento</h3>
+                    <p id="mEnquadramento"></p>
+                </div>
+            </div>
+            
+            <div class="modal-tab-content" id="tab-objetivos">
+                <div class="modal-section" id="mObjetivosSec">
+                    <h3>Objetivos</h3>
+                    <p id="mObjetivos"></p>
+                </div>
+            </div>
+            
+            <div class="modal-tab-content" id="tab-plano">
+                <div class="modal-section" id="mPlanoSec">
+                    <h4>1º Semestre</h4>
+                    <p id="mPlano1"></p>
+                    <h4 style="margin-top:1.5rem;">2º Semestre</h4>
+                    <p id="mPlano2"></p>
+                </div>
+            </div>
+            
+            <div class="modal-tab-content" id="tab-condicoes">
+                <div class="modal-section" id="mCondicoesSec">
+                    <h3>Condições de Acesso / Local</h3>
+                    <p id="mCondicoes"></p>
+                </div>
+                <div class="modal-section" id="mObservacoesSec">
+                    <h3>Observações</h3>
+                    <p id="mObservacoes"></p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
