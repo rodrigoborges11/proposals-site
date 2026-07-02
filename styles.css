@@ -284,6 +284,7 @@ h1 {
   padding: 2rem 3rem 1.5rem 2rem;
   border-bottom: 1px solid var(--glass-border);
   background: #ffffff;
+  flex-shrink: 0;
 }
 
 .modal-id {
@@ -307,6 +308,7 @@ h1 {
   padding: 0 2rem;
   border-bottom: 1px solid var(--glass-border);
   background: #f9fafb;
+  flex-shrink: 0;
 }
 
 .modal-tab {
