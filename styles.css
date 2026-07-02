@@ -467,20 +467,24 @@ h1 {
   font-size: 1.2rem;
   transition: all var(--transition-speed);
 }
+
 .select-btn:hover {
   background: #f3f4f6;
   transform: scale(1.1);
 }
+
 .select-btn.selected {
-  background: #fef08a; /* yellow-200 */
-  border-color: #facc15; /* yellow-400 */
-  color: #ca8a04; /* yellow-600 */
+  background: #fef08a;
+  /* yellow-200 */
+  border-color: #facc15;
+  /* yellow-400 */
+  color: #ca8a04;
+  /* yellow-600 */
   box-shadow: 0 0 10px rgba(250, 204, 21, 0.4);
 }
-.proposal-card.is-selected {
-  border-color: #facc15;
-  background: #fefce8; /* yellow-50 */
-}
+
+
+
 .card-header-inner {
   display: flex;
   align-items: center;

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function updateEscolhasTab() {
         if(escolhasTab) {
-            escolhasTab.textContent = `⭐ As Minhas Escolhas (${selectedProposals.size}/4)`;
+            escolhasTab.textContent = `⭐ Minhas Escolhas (${selectedProposals.size}/5)`;
         }
     }
     updateEscolhasTab();
@@ -125,9 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const idStr = id.toString();
             const isSelected = selectedProposals.has(idStr);
-            if (isSelected) {
-                card.classList.add('is-selected');
-            }
 
             card.innerHTML = `
                 <div class="card-header">
@@ -156,15 +153,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     if (selectedProposals.has(idStr)) {
                         selectedProposals.delete(idStr);
-                        card.classList.remove('is-selected');
                         btn.classList.remove('selected');
                     } else {
-                        if (selectedProposals.size >= 4) {
-                            alert("Pode escolher no máximo 4 propostas! Remova alguma antes de adicionar outra.");
+                        if (selectedProposals.size >= 5) {
+                            alert("Pode escolher no máximo 5 propostas! Remova alguma antes de adicionar outra.");
                             return;
                         }
                         selectedProposals.add(idStr);
-                        card.classList.add('is-selected');
                         btn.classList.add('selected');
                     }
                     
